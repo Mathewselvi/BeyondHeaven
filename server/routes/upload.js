@@ -49,10 +49,9 @@ router.post('/', upload.array('images'), (req, res) => {
             return res.status(400).send('No files uploaded.');
         }
 
-        // Return paths
+        // Return paths as relative for portability
         const fileUrls = req.files.map(file => {
-            // Construct absolute URL (assuming server runs on localhost:5001)
-            const url = `${req.protocol}://${req.get('host')}/uploads/${file.filename}`;
+            const url = `/uploads/${file.filename}`;
             console.log('File uploaded:', url); // Debug
             return url;
         });
