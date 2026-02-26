@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
 import { CheckCircle } from 'lucide-react';
 
 const Checkout = () => {
@@ -25,7 +25,7 @@ const Checkout = () => {
 
     useEffect(() => {
         if (roomId) {
-            axios.get(`http://localhost:5001/api/rooms/${roomId}`)
+            api.get(`/rooms/${roomId}`)
                 .then(res => setRoom(res.data.data))
                 .catch(err => console.error(err));
         }
@@ -41,7 +41,7 @@ const Checkout = () => {
         setError('');
 
         try {
-            await axios.post('http://localhost:5001/api/bookings', {
+            await api.post('/bookings', {
                 roomId,
                 checkIn,
                 checkOut,

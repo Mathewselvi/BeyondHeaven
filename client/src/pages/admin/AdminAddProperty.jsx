@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../utils/api';
 import { ArrowLeft, Save, X } from 'lucide-react';
 
 const AdminAddProperty = () => {
@@ -25,7 +25,7 @@ const AdminAddProperty = () => {
         if (isEditMode) {
             const fetchProperty = async () => {
                 try {
-                    const res = await axios.get(`http://localhost:5001/api/properties/${id}`);
+                    const res = await api.get(`/properties/${id}`);
                     const data = res.data.data;
                     setFormData({
                         name: data.name || '',
@@ -60,13 +60,10 @@ const AdminAddProperty = () => {
                 images: formData.image ? [formData.image] : []
             };
 
-            const token = localStorage.getItem('token');
-            const config = { headers: { Authorization: `Bearer ${token}` } };
-
             if (isEditMode) {
-                await axios.put(`http://localhost:5001/api/properties/${id}`, payload, config);
+                await api.put(`/properties/${id}`, payload);
             } else {
-                await axios.post('http://localhost:5001/api/properties', payload, config);
+                await api.post('/properties', payload);
             }
             navigate('/admin/properties');
         } catch (err) {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api, { getImageUrl } from '../../utils/api';
 import { Plus, Trash2, Edit, X } from 'lucide-react';
 
 const AdminRooms = () => {
@@ -9,7 +9,7 @@ const AdminRooms = () => {
 
     const fetchRooms = async () => {
         try {
-            const res = await axios.get('http://localhost:5001/api/rooms');
+            const res = await api.get('/rooms');
             setRooms(res.data.data);
         } catch (err) {
             console.error(err);
@@ -26,11 +26,7 @@ const AdminRooms = () => {
 
     const confirmDelete = async (id) => {
         try {
-            // Retrieve token manually
-            const token = localStorage.getItem('token');
-            const config = { headers: { Authorization: `Bearer ${token}` } };
-
-            await axios.delete(`http://localhost:5001/api/rooms/${id}`, config);
+            await api.delete(`/rooms/${id}`);
             // Refresh list
             setRooms(rooms.filter(room => room._id !== id));
             setDeleteId(null);
@@ -59,7 +55,7 @@ const AdminRooms = () => {
                         <div className="relative h-56 bg-gray-200 overflow-hidden">
                             {room.images?.length > 0 ? (
                                 <>
-                                    <img src={room.images[0]} alt={room.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                    <img src={getImageUrl(room.images[0])} alt={room.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                     <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded flex items-center gap-1">
                                         📷 {room.images.length}
                                     </div>

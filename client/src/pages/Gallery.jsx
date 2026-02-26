@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api, { getServerUrl } from '../utils/api';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ZoomIn } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -9,11 +9,12 @@ const Gallery = () => {
     const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(null);
+    const serverUrl = getServerUrl();
 
     useEffect(() => {
         const fetchContent = async () => {
             try {
-                const res = await axios.get('http://localhost:5001/api/content/gallery');
+                const res = await api.get('/content/gallery');
                 const galleryData = res.data.data.find(c => c.section === 'main');
                 if (galleryData && galleryData.images) {
                     setImages(galleryData.images);
@@ -86,7 +87,7 @@ const Gallery = () => {
                                 onClick={() => setSelectedImage(img)}
                             >
                                 <img
-                                    src={`http://localhost:5001${img}`}
+                                    src={`${serverUrl}${img}`}
                                     alt={`Gallery ${idx + 1}`}
                                     loading="lazy"
                                     decoding="async"
@@ -114,7 +115,7 @@ const Gallery = () => {
                         Close
                     </button>
                     <img
-                        src={`http://localhost:5001${selectedImage}`}
+                        src={`${serverUrl}${selectedImage}`}
                         alt="Full View"
                         className="max-w-full max-h-[90vh] object-contain shadow-2xl rounded-sm"
                     />

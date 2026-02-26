@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api, { getServerUrl } from "../../utils/api";
 import { Save, Upload, Video, Image as ImageIcon, Trash2, Plus, Layout, Type } from 'lucide-react';
 import AdminLayout from "../../components/AdminLayout";
 
@@ -28,6 +28,8 @@ const AdminSiteContent = () => {
 
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
+
+    const serverUrl = getServerUrl();
 
     // Content State
     const [contentData, setContentData] = useState({
@@ -58,7 +60,7 @@ const AdminSiteContent = () => {
         setLoading(true);
         try {
             // Fetch all content for the page
-            const res = await axios.get(`http://localhost:5001/api/content/${activePage}`);
+            const res = await api.get(`/content/${activePage}`);
             const sectionData = res.data.data.find(c => c.section === activeSection);
 
             if (sectionData) {
@@ -119,15 +121,13 @@ const AdminSiteContent = () => {
         });
 
         try {
-            await axios.put(
-                `http://localhost:5001/api/content/${activePage}/${activeSection}`,
+            await api.put(
+                `/content/${activePage}/${activeSection}`,
                 formData,
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-                    withCredentials: true
+                        'Content-Type': 'multipart/form-data'
+                    }
                 }
             );
             alert('Content Updated Successfully');
@@ -256,7 +256,7 @@ const AdminSiteContent = () => {
                                             {/* Preview Existing Video */}
                                             {contentData.videoUrl && !selectedFiles.length && (
                                                 <div className="mt-4 max-w-md mx-auto">
-                                                    <video src={`http://localhost:5001${contentData.videoUrl}`} className="w-full rounded-lg shadow-sm" controls />
+                                                    <video src={`${serverUrl}${contentData.videoUrl}`} className="w-full rounded-lg shadow-sm" controls />
                                                     <p className="text-xs text-gray-400 mt-2">Current Video</p>
                                                 </div>
                                             )}
@@ -268,7 +268,7 @@ const AdminSiteContent = () => {
                                                 {/* Existing Images */}
                                                 {contentData.images && contentData.images.map((img, idx) => (
                                                     <div key={idx} className="relative group rounded-lg overflow-hidden h-32 bg-gray-100">
-                                                        <img src={`http://localhost:5001${img}`} alt="" loading="lazy" className="w-full h-full object-cover" />
+                                                        <img src={`${serverUrl}${img}`} alt="" loading="lazy" className="w-full h-full object-cover" />
                                                         <button
                                                             type="button"
                                                             onClick={() => setContentData({ ...contentData, images: contentData.images.filter((_, i) => i !== idx) })}

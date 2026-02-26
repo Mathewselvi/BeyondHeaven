@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Mail, Send, Loader2 } from 'lucide-react';
-import axios from 'axios';
+import { MapPin, Phone, Mail, Send, Loader2, MessageCircle } from 'lucide-react';
+import api from '../utils/api';
 
 const Contact = () => {
     const [formData, setFormData] = useState({
@@ -25,7 +25,7 @@ const Contact = () => {
         setErrorMessage('');
 
         try {
-            await axios.post('http://localhost:5001/api/messages', formData);
+            await api.post('/messages', formData);
             setStatus('success');
             setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
             setTimeout(() => setStatus('idle'), 5000);
@@ -75,9 +75,9 @@ const Contact = () => {
                                 <div>
                                     <h3 className="text-lg font-medium text-secondary mb-1">Our Location</h3>
                                     <p className="text-gray-600 leading-relaxed">
-                                        Beyond Heaven Resort<br />
-                                        123 Paradise Road<br />
-                                        Munnar, Kerala 685612
+                                        Beyond Heaven, Ottamaram,<br />
+                                        Munnar - Bison Valley Road,<br />
+                                        Munnar, Kerala 685565
                                     </p>
                                 </div>
                             </div>
@@ -88,8 +88,12 @@ const Contact = () => {
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-medium text-secondary mb-1">Phone Number</h3>
-                                    <p className="text-gray-600">+91 98765 43210</p>
-                                    <p className="text-gray-600">+91 12345 67890</p>
+                                    <p className="text-gray-600">
+                                        <a href="tel:+919946182774" className="hover:text-primary transition-colors">+91 99461 82774</a>
+                                    </p>
+                                    <p className="text-gray-600">
+                                        <a href="tel:+916282097720" className="hover:text-primary transition-colors">+91 62820 97720</a>
+                                    </p>
                                 </div>
                             </div>
 
@@ -99,8 +103,21 @@ const Contact = () => {
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-medium text-secondary mb-1">Email Address</h3>
-                                    <p className="text-gray-600">contact@beyondheaven.com</p>
-                                    <p className="text-gray-600">reservations@beyondheaven.com</p>
+                                    <p className="text-gray-600">
+                                        <a href="mailto:thebeyondheaven@gmail.com" className="hover:text-primary transition-colors">thebeyondheaven@gmail.com</a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-start space-x-4">
+                                <div className="bg-green-100 p-3 rounded-full text-green-600">
+                                    <MessageCircle size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-medium text-secondary mb-1">WhatsApp</h3>
+                                    <p className="text-gray-600">
+                                        <a href="https://wa.me/919946182774" target="_blank" rel="noopener noreferrer" className="hover:text-green-600 transition-colors">+91 99461 82774</a>
+                                    </p>
                                 </div>
                             </div>
                         </div>

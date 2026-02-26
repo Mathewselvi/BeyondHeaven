@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../utils/api';
 import useAuthStore from '../../store/authStore';
 import { Lock } from 'lucide-react';
 
@@ -14,7 +14,7 @@ const AdminLogin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:5001/api/auth/login', { email, password });
+            const res = await api.post('/auth/login', { email, password });
             login(res.data.user);
             // Save token to localStorage manually if not handled by cookie entirely or needed for headers
             // My Auth middleware checks header first, so let's save token too if store doesn't
@@ -50,7 +50,7 @@ const AdminLogin = () => {
                             className="input-field w-full"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="admin@beyondheaven.com"
+                            placeholder="thebeyondheaven@gmail.com"
                         />
                     </div>
                     <div>

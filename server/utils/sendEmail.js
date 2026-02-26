@@ -38,7 +38,7 @@ const sendEmail = async (options) => {
 
     // 2. Define Email Options
     const message = {
-        from: `${process.env.FROM_NAME || 'BeyondHeaven'} <${process.env.FROM_EMAIL || 'noreply@beyondheaven.com'}>`,
+        from: `${process.env.FROM_NAME || 'BeyondHeaven'} <${process.env.FROM_EMAIL || 'thebeyondheaven@gmail.com'}>`,
         to: options.email,
         subject: options.subject,
         text: options.message,

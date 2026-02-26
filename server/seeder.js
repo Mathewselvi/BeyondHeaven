@@ -18,7 +18,7 @@ const importData = async () => {
         // Create Admin User
         const createdUser = await User.create({
             name: 'Admin User',
-            email: 'admin@beyondheaven.com',
+            email: 'thebeyondheaven@gmail.com',
             password: 'password123', // Will be hashed by pre-save hook
             role: 'admin'
         });
@@ -28,8 +28,8 @@ const importData = async () => {
         // Create Property
         const property = await Property.create({
             name: 'Beyond Heaven Resort',
-            description: 'A luxurious escape in the Maldives.',
-            location: 'Maldives',
+            description: 'A luxurious escape in Munnar.',
+            location: 'Ottamaram, Munnar - Bison Valley Road, Munnar, Kerala 685565',
             admin: createdUser._id,
             images: ['https://images.unsplash.com/photo-1542314831-068cd1dbfeeb']
         });

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { Check, X, Clock, Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -10,9 +10,7 @@ const AdminBookings = () => {
 
     const fetchBookings = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const config = { headers: { Authorization: `Bearer ${token}` } };
-            const res = await axios.get('http://localhost:5001/api/bookings', config);
+            const res = await api.get('/bookings');
             setBookings(res.data.data);
         } catch (err) {
             console.error(err);
@@ -29,10 +27,7 @@ const AdminBookings = () => {
         if (!window.confirm(`Are you sure you want to mark this booking as ${status}?`)) return;
 
         try {
-            const token = localStorage.getItem('token');
-            const config = { headers: { Authorization: `Bearer ${token}` } };
-
-            await axios.put(`http://localhost:5001/api/bookings/${id}`, { status }, config);
+            await api.put(`/bookings/${id}`, { status });
 
             // Refresh
             fetchBookings();

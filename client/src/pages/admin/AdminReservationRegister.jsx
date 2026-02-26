@@ -526,7 +526,7 @@ const AdminReservationRegister = () => {
                                             value={formData.phone}
                                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                             className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-black"
-                                            placeholder="+91 98765 43210"
+                                            placeholder="+91 99461 82774"
                                         />
                                     </div>
                                     <div className="md:col-span-2">
@@ -537,7 +537,7 @@ const AdminReservationRegister = () => {
                                             value={formData.email}
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                             className="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-black"
-                                            placeholder="john@example.com"
+                                            placeholder="thebeyondheaven@gmail.com"
                                         />
                                     </div>
                                 </div>

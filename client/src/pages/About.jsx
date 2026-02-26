@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api, { getServerUrl } from '../utils/api';
 import { Leaf, Compass, Heart, MapPin, X } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -14,19 +14,18 @@ const About = () => {
     });
     const [showMap, setShowMap] = useState(false);
 
+    const serverUrl = getServerUrl();
+
     useEffect(() => {
         const fetchContent = async () => {
             try {
-                const res = await axios.get('http://localhost:5001/api/content/about');
+                const res = await api.get('/content/about');
                 const data = res.data.data;
-
-                const contentMap = {
-                    hero: data.find(c => c.section === 'hero'),
-                    story: data.find(c => c.section === 'story'),
-                    gallery: data.find(c => c.section === 'gallery'),
-                    cta: data.find(c => c.section === 'cta')
-                };
-                setContent(contentMap);
+                const config = {};
+                data.forEach(item => {
+                    config[item.section] = item;
+                });
+                setContent(config);
             } catch (err) {
                 console.error("Failed to load about content", err);
             }
@@ -38,7 +37,7 @@ const About = () => {
     const getImg = (section, index = 0, defaultImg) => {
         const config = content[section];
         if (config?.images && config.images[index]) {
-            return `http://localhost:5001${config.images[index]}`;
+            return `${serverUrl}${config.images[index]}`;
         }
         return defaultImg;
     };
@@ -62,6 +61,10 @@ const About = () => {
                 <div className="absolute inset-0">
                     <img
                         src={getImg('hero', 0, '/royal-villa.jpg')}
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/royal-villa.jpg';
+                        }}
                         alt="Beyond Heaven Hero"
                         loading="eager" /* Hero image should be eager */
                         className="w-full h-full object-cover scale-105 animate-slow-zoom"
@@ -254,7 +257,7 @@ const About = () => {
                     <MapPin className="mx-auto mb-6 text-primary animate-bounce" size={40} />
                     <h2 className="text-4xl md:text-6xl font-serif mb-8">Find Your Way Home</h2>
                     <p className="max-w-2xl mx-auto text-xl font-light mb-12 opacity-90">
-                        Located on the pristine cliffs of the Southern Coast, just a 40-minute scenic drive from the International Airport.
+                        Located at Ottamaram, along the scenic Munnar - Bison Valley Road, Munnar, Kerala 685565.
                     </p>
                     <button
                         onClick={() => setShowMap(true)}

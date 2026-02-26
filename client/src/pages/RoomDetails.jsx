@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api, { getServerUrl, getImageUrl } from '../utils/api';
 import { ArrowLeft, Check, MapPin, X, ChevronLeft, ChevronRight, Calendar, Users, AlertCircle } from 'lucide-react';
 
 const RoomDetails = () => {
@@ -8,6 +8,8 @@ const RoomDetails = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const queryParams = new URLSearchParams(location.search);
+
+    const serverUrl = getServerUrl();
 
     // Initial state from URL or defaults
     const [checkInDate, setCheckInDate] = useState(queryParams.get('checkIn') || '');
@@ -29,7 +31,7 @@ const RoomDetails = () => {
     useEffect(() => {
         const fetchRoom = async () => {
             try {
-                const res = await axios.get(`http://localhost:5001/api/rooms/${id}`);
+                const res = await api.get(`/rooms/${id}`);
                 setRoom(res.data.data);
             } catch (err) {
                 console.error(err);
@@ -50,7 +52,7 @@ const RoomDetails = () => {
             setRecommendations([]);
 
             try {
-                const res = await axios.post('http://localhost:5001/api/bookings/check-availability', {
+                const res = await api.post('/bookings/check-availability', {
                     roomId: id,
                     checkIn: checkInDate,
                     checkOut: checkOutDate
@@ -80,7 +82,7 @@ const RoomDetails = () => {
 
     const fetchRecommendations = async () => {
         try {
-            const res = await axios.get('http://localhost:5001/api/rooms', {
+            const res = await api.get('/rooms', {
                 params: {
                     checkIn: checkInDate,
                     checkOut: checkOutDate,
@@ -150,7 +152,7 @@ const RoomDetails = () => {
                 {/* Main Hero Image */}
                 <div onClick={() => setSelectedImageIndex(0)} className="md:col-span-2 md:row-span-2 relative overflow-hidden rounded-l-xl group cursor-zoom-in">
                     <img
-                        src={room.images?.[0] || 'https://via.placeholder.com/800'}
+                        src={getImageUrl(room.images?.[0]) || 'https://via.placeholder.com/800'}
                         alt={room.name}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
@@ -165,7 +167,7 @@ const RoomDetails = () => {
                 {/* Secondary Images (Grid) */}
                 {room.images?.slice(1, 5).map((img, idx) => (
                     <div key={idx} onClick={() => setSelectedImageIndex(idx + 1)} className="relative overflow-hidden hidden md:block group cursor-zoom-in">
-                        <img src={img} alt={`View ${idx + 2}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                        <img src={getImageUrl(img)} alt={`View ${idx + 2}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                         <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
                     </div>
                 ))}
@@ -195,7 +197,7 @@ const RoomDetails = () => {
                         </>
                     )}
                     <img
-                        src={room.images[selectedImageIndex]}
+                        src={getImageUrl(room.images[selectedImageIndex])}
                         alt={`Preview ${selectedImageIndex + 1}`}
                         className="max-h-[85vh] max-w-[90vw] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-300"
                         onClick={(e) => e.stopPropagation()}
@@ -239,7 +241,7 @@ const RoomDetails = () => {
                                 {recommendations.map(rec => (
                                     <Link key={rec._id} to={`/rooms/${rec._id}?checkIn=${checkInDate}&checkOut=${checkOutDate}&guests=${guestCount}`} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden group">
                                         <div className="h-40 overflow-hidden">
-                                            <img src={rec.images?.[0]} alt={rec.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                                            <img src={getImageUrl(rec.images?.[0])} alt={rec.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                                         </div>
                                         <div className="p-4">
                                             <h4 className="font-serif text-lg text-secondary mb-1">{rec.name}</h4>

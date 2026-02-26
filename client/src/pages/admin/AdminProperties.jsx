@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api, { getImageUrl } from '../../utils/api';
 import { Plus, Edit, Trash2, MapPin, Phone, Mail } from 'lucide-react';
 
 const AdminProperties = () => {
@@ -9,7 +9,7 @@ const AdminProperties = () => {
 
     const fetchProperties = async () => {
         try {
-            const res = await axios.get('http://localhost:5001/api/properties');
+            const res = await api.get('/properties');
             setProperties(res.data.data);
         } catch (err) {
             console.error(err);
@@ -26,9 +26,7 @@ const AdminProperties = () => {
 
     const confirmDelete = async (id) => {
         try {
-            const token = localStorage.getItem('token');
-            const config = { headers: { Authorization: `Bearer ${token}` } };
-            await axios.delete(`http://localhost:5001/api/properties/${id}`, config);
+            await api.delete(`/properties/${id}`);
             setProperties(properties.filter(p => p._id !== id));
             setDeleteId(null);
         } catch (err) {
@@ -67,7 +65,7 @@ const AdminProperties = () => {
                                     <td className="px-6 py-4 w-28">
                                         <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
                                             {property.images?.[0] ?
-                                                <img src={property.images[0]} alt="" className="w-full h-full object-cover" /> :
+                                                <img src={getImageUrl(property.images[0])} alt="" className="w-full h-full object-cover" /> :
                                                 <div className="flex items-center justify-center h-full text-gray-400 text-xs">No Image</div>
                                             }
                                         </div>

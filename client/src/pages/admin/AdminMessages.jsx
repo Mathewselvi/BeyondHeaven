@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { format } from 'date-fns';
 import { Trash2, Reply } from 'lucide-react';
 
@@ -10,9 +10,7 @@ const AdminMessages = () => {
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const config = { headers: { Authorization: `Bearer ${token}` } };
-                const res = await axios.get('http://localhost:5001/api/messages', config);
+                const res = await api.get('/messages');
                 setMessages(res.data.data);
             } catch (err) {
                 console.error(err);
@@ -27,9 +25,7 @@ const AdminMessages = () => {
 
     const confirmDelete = async (id) => {
         try {
-            const token = localStorage.getItem('token');
-            const config = { headers: { Authorization: `Bearer ${token}` } };
-            await axios.delete(`http://localhost:5001/api/messages/${id}`, config);
+            await api.delete(`/messages/${id}`);
             setMessages(messages.filter(m => m._id !== id));
             setDeleteId(null);
         } catch (err) {

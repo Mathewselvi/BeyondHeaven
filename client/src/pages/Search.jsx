@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+import api, { getImageUrl } from '../utils/api';
 import { Search as SearchIcon, Calendar, Users, ArrowRight } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -24,7 +24,7 @@ const Search = () => {
         const fetchRooms = async () => {
             try {
                 // Adjust API URL if needed (e.g., config file)
-                const res = await axios.get(`http://localhost:5001/api/rooms${location.search}`);
+                const res = await api.get(`/rooms${location.search}`);
                 setRooms(res.data.data);
             } catch (err) {
                 console.error(err);
@@ -116,7 +116,7 @@ const Search = () => {
                                 {/* Image Slider Placeholder */}
                                 <div className="h-64 overflow-hidden relative bg-gray-200">
                                     {room.images && room.images.length > 0 ? (
-                                        <img src={room.images[0]} alt={room.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                        <img src={getImageUrl(room.images[0])} alt={room.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
                                     )}

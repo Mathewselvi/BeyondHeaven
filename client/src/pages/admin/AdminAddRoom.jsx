@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
-import axios from 'axios';
+import api, { getImageUrl } from '../../utils/api';
 import { X, UploadCloud, Trash2, Star } from 'lucide-react';
 
 const AdminAddRoom = () => {
@@ -31,7 +31,7 @@ const AdminAddRoom = () => {
         // Fetch properties for auto-assignment
         const fetchProperties = async () => {
             try {
-                const res = await axios.get('http://localhost:5001/api/properties');
+                const res = await api.get('/properties');
                 setProperties(res.data.data);
 
                 // Auto-select the first property (Main Resort)
@@ -52,7 +52,7 @@ const AdminAddRoom = () => {
         if (isEditMode) {
             const fetchRoom = async () => {
                 try {
-                    const res = await axios.get(`http://localhost:5001/api/rooms/${id}`);
+                    const res = await api.get(`/rooms/${id}`);
                     const data = res.data.data;
                     setFormData({
                         propertyId: data.propertyId?._id || data.propertyId || '',
@@ -92,7 +92,7 @@ const AdminAddRoom = () => {
 
         try {
             setLoading(true);
-            const res = await axios.post('http://localhost:5001/api/upload', uploadData, {
+            const res = await api.post('/upload', uploadData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -116,9 +116,6 @@ const AdminAddRoom = () => {
         setLoading(true);
 
         try {
-            const token = localStorage.getItem('token');
-            const config = { headers: { Authorization: `Bearer ${token}` } };
-
             const payload = {
                 ...formData,
                 features: formData.amenities.split(',').map(s => s.trim()).filter(Boolean),
@@ -126,9 +123,9 @@ const AdminAddRoom = () => {
             };
 
             if (isEditMode) {
-                await axios.put(`http://localhost:5001/api/rooms/${id}`, payload, config);
+                await api.put(`/rooms/${id}`, payload);
             } else {
-                await axios.post('http://localhost:5001/api/rooms', payload, config);
+                await api.post('/rooms', payload);
             }
             navigate('/admin/rooms');
         } catch (err) {
@@ -206,7 +203,7 @@ const AdminAddRoom = () => {
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                                 {Array.isArray(formData.image) && formData.image.map((imgUrl, index) => (
                                     <div key={index} className={`relative group aspect-square bg-gray-100 rounded-lg overflow-hidden border ${index === 0 ? 'border-primary ring-2 ring-primary/20' : 'border-gray-200'}`}>
-                                        <img src={imgUrl} alt={`Room ${index + 1}`} className="w-full h-full object-cover" />
+                                        <img src={getImageUrl(imgUrl)} alt={`Room ${index + 1}`} className="w-full h-full object-cover" />
 
                                         {/* Cover Badge */}
                                         {index === 0 && (

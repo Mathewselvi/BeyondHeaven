@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { format, isWithinInterval, startOfDay, endOfDay, parseISO } from 'date-fns';
 import { Calendar as CalendarIcon, Search } from 'lucide-react';
 
@@ -13,13 +13,10 @@ const AdminAvailability = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const config = { headers: { Authorization: `Bearer ${token}` } };
-
                 const [roomsRes, bookingsRes, propsRes] = await Promise.all([
-                    axios.get('http://localhost:5001/api/rooms'),
-                    axios.get('http://localhost:5001/api/bookings', config),
-                    axios.get('http://localhost:5001/api/properties')
+                    api.get('/rooms'),
+                    api.get('/bookings'),
+                    api.get('/properties')
                 ]);
 
                 setRooms(roomsRes.data.data);

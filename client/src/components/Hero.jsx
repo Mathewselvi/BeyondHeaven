@@ -1,15 +1,17 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api, { getServerUrl } from '../utils/api';
 
 const Hero = () => {
     const [content, setContent] = useState(null);
     const [currentSlide, setCurrentSlide] = useState(0);
 
+    const serverUrl = getServerUrl();
+
     useEffect(() => {
         const fetchContent = async () => {
             try {
-                const res = await axios.get('http://localhost:5001/api/content/home');
+                const res = await api.get('/content/home');
                 const heroData = res.data.data.find(c => c.section === 'hero');
                 if (heroData) {
                     setContent(heroData);
@@ -45,7 +47,7 @@ const Hero = () => {
             <div className="absolute inset-0 bg-secondary">
                 {content.type === 'video' && content.videoUrl ? (
                     <video
-                        src={`http://localhost:5001${content.videoUrl}`}
+                        src={`${serverUrl}${content.videoUrl}`}
                         autoPlay
                         loop
                         muted
@@ -53,10 +55,14 @@ const Hero = () => {
                         className="w-full h-full object-cover object-center opacity-70"
                     />
                 ) : (
-                    <AnimatePresence>
+                    <AnimatePresence mode='wait'>
                         <motion.img
                             key={currentSlide}
-                            src={content.images && content.images.length > 0 ? `http://localhost:5001${content.images[currentSlide]}` : '/royal-villa.jpg'}
+                            src={content.images && content.images.length > 0 ? `${serverUrl}${content.images[currentSlide]}` : '/royal-villa.jpg'}
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = '/royal-villa.jpg';
+                            }}
                             initial={{ opacity: 0, scale: 1.1 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0 }}

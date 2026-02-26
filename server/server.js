@@ -17,8 +17,9 @@ app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] Request received: ${req.method} ${req.url}`);
     console.log('Origin header:', req.headers.origin);
 
-    // Force allow localhost:5173
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+    // Allow dynamic origin from .env
+    const allowedOrigin = process.env.CLIENT_URL || 'http://localhost:5173';
+    res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
